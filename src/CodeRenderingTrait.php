@@ -36,26 +36,12 @@ trait CodeRenderingTrait
     public function renderCodeBlock(string $code, string $language, bool $verbatim): string
     {
         $wrappedCode = $verbatim
-            ? '@verbatim'.$code.'@endverbatim'
+            ? '@verbatim' . $code . '@endverbatim'
             : $code;
 
-        $torchlight = '<x-torchlight-code language="'.$language.'">'.$wrappedCode.'</x-torchlight-code>';
+        $torchlight = '<x-torchlight-code language="' . $language . '">' . $wrappedCode . '</x-torchlight-code>';
 
-        return '<pre>'.Blade::render($torchlight).'</pre>';
-    }
-
-    /**
-     * Render Torchlight code for use in collapsible sections
-     */
-    private function renderTorchlightCode(string $code, string $language, bool $verbatim): string
-    {
-        $wrappedCode = $verbatim
-            ? '@verbatim'.$code.'@endverbatim'
-            : $code;
-
-        $torchlight = '<x-torchlight-code language="'.$language.'">'.$wrappedCode.'</x-torchlight-code>';
-
-        return Blade::render($torchlight);
+        return '<pre>' . Blade::render($torchlight) . '</pre>';
     }
 
     /**
@@ -87,7 +73,7 @@ trait CodeRenderingTrait
      */
     private function buildCollapsibleSection(string $code, string $language, bool $verbatim, string $viewLabel, string $copyLabel): string
     {
-        $uniqueId = 'code-'.\Illuminate\Support\Str::random(8);
+        $uniqueId = 'code-' . \Illuminate\Support\Str::random(8);
         $rawCode = htmlspecialchars($code);
         $renderedCode = $this->renderTorchlightCode($code, $language, $verbatim);
         $copyJs = $this->getCopyButtonJs($uniqueId);
@@ -96,15 +82,15 @@ trait CodeRenderingTrait
             <div x-data="{ open: false }" class="mt-05 mb">
                 <div class="flex items-center gap-05">
                     <button x-on:click="open = !open" class="btn sm">
-                        <span>'.htmlspecialchars($viewLabel).'</span>
+                        <span>' . htmlspecialchars($viewLabel) . '</span>
                     </button>
-                    <button x-data="{ copied: false }" @click="'.$copyJs.'" class="btn sm"
+                    <button x-data="{ copied: false }" @click="' . $copyJs . '" class="btn sm"
                         :class="copied ? \'bg-sky-500\' : \'bg-sky-300\'"
-                        x-text="copied ? \'Copied!\' : \''.$copyLabel.'\'">
+                        x-text="copied ? \'Copied!\' : \'' . $copyLabel . '\'">
                     </button>
                 </div>
                 <div x-show="open" x-collapse class="mt-05">
-                    <pre id="'.$uniqueId.'" data-code="'.$rawCode.'">'.$renderedCode.'</pre>
+                    <pre id="' . $uniqueId . '" data-code="' . $rawCode . '">' . $renderedCode . '</pre>
                 </div>
             </div>';
     }
@@ -112,7 +98,7 @@ trait CodeRenderingTrait
     /**
      * Format HTML with proper indentation without breaking SVG or attributes
      */
-    private function formatHtml(string $html): string
+    public function formatHtml(string $html): string
     {
         $html = preg_replace('/>\s+</', '><', $html);
 
@@ -132,15 +118,15 @@ trait CodeRenderingTrait
             if (preg_match('/^</', $token)) {
                 if (preg_match('/^<\//', $token)) {
                     $indent--;
-                    $formatted .= str_repeat($indentString, max(0, $indent)).$token."\n";
-                } elseif (preg_match('/\/>$/', $token) || preg_match('/<('.implode('|', $voidElements).')[\s>]/i', $token)) {
-                    $formatted .= str_repeat($indentString, $indent).$token."\n";
+                    $formatted .= str_repeat($indentString, max(0, $indent)) . $token . "\n";
+                } elseif (preg_match('/\/>$/', $token) || preg_match('/<(' . implode('|', $voidElements) . ')[\s>]/i', $token)) {
+                    $formatted .= str_repeat($indentString, $indent) . $token . "\n";
                 } else {
-                    $formatted .= str_repeat($indentString, $indent).$token."\n";
+                    $formatted .= str_repeat($indentString, $indent) . $token . "\n";
                     $indent++;
                 }
             } else {
-                $formatted .= str_repeat($indentString, $indent).$token."\n";
+                $formatted .= str_repeat($indentString, $indent) . $token . "\n";
             }
         }
 

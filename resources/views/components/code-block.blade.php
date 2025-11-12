@@ -1,5 +1,7 @@
- @php
-     $code = $slot->toHtml();
- @endphp
+@php
+    $code = $slot->toHtml();
+@endphp
 
- {!! $renderCodeBlock($code, $language, true) !!}
+<pre><x-torchlight-code language="{{ $language }}">
+    {!! $code !!}
+</x-torchlight-code></pre>
